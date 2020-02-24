@@ -101,6 +101,8 @@ angular.module('rest').factory('Field', [function defineField() {
          */
         PASSWORD : 'PASSWORD',
 
+        ACCESS_TOKEN : 'ACCESS_TOKEN',
+
         /**
          * The type string associated with parameters that may contain only
          * numeric values.

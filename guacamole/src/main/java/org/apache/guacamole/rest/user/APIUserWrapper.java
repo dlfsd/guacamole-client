@@ -64,13 +64,13 @@ public class APIUserWrapper implements User {
     }
 
     @Override
-    public String getPassword() {
-        return apiUser.getPassword();
+    public String getAccessToken() {
+        return apiUser.getAccessToken();
     }
 
     @Override
-    public void setPassword(String password) {
-        apiUser.setPassword(password);
+    public void setAccessToken(String accessToken) {
+        apiUser.setAccessToken(accessToken);
     }
 
     @Override

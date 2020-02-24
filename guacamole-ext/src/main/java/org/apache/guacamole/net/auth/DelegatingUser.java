@@ -69,13 +69,13 @@ public class DelegatingUser implements User {
     }
 
     @Override
-    public String getPassword() {
-        return user.getPassword();
+    public String getAccessToken() {
+        return user.getAccessToken();
     }
 
     @Override
-    public void setPassword(String password) {
-        user.setPassword(password);
+    public void setAccessToken(String accessToken) {
+        user.setAccessToken(accessToken);
     }
 
     @Override

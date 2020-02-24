@@ -42,8 +42,6 @@ import org.apache.guacamole.auth.jdbc.base.ModeledActivityRecord;
 import org.apache.guacamole.auth.jdbc.permission.ObjectPermissionMapper;
 import org.apache.guacamole.auth.jdbc.permission.ObjectPermissionModel;
 import org.apache.guacamole.auth.jdbc.permission.UserPermissionMapper;
-import org.apache.guacamole.auth.jdbc.security.PasswordEncryptionService;
-import org.apache.guacamole.auth.jdbc.security.PasswordPolicyService;
 import org.apache.guacamole.form.Field;
 import org.apache.guacamole.form.PasswordField;
 import org.apache.guacamole.net.auth.ActivityRecord;
@@ -51,7 +49,6 @@ import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.AuthenticationProvider;
 import org.apache.guacamole.net.auth.User;
 import org.apache.guacamole.net.auth.credentials.CredentialsInfo;
-import org.apache.guacamole.net.auth.credentials.GuacamoleInsufficientCredentialsException;
 import org.apache.guacamole.net.auth.permission.ObjectPermission;
 import org.apache.guacamole.net.auth.permission.ObjectPermissionSet;
 import org.apache.guacamole.net.auth.permission.SystemPermission;
@@ -144,18 +141,6 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
     @Inject
     private Provider<ModeledUser> userProvider;
 
-    /**
-     * Service for hashing passwords.
-     */
-    @Inject
-    private PasswordEncryptionService encryptionService;
-
-    /**
-     * Service for enforcing password complexity policies.
-     */
-    @Inject
-    private PasswordPolicyService passwordPolicyService;
-
     @Override
     protected ModeledDirectoryObjectMapper<UserModel> getObjectMapper() {
         return userMapper;
@@ -204,7 +189,7 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
 
         // Set model contents through ModeledUser, copying the provided user
         user.setIdentifier(object.getIdentifier());
-        user.setPassword(object.getPassword());
+        user.setAccessToken(object.getAccessToken());
         user.setAttributes(object.getAttributes());
 
         return model;
@@ -245,10 +230,6 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
         if (!existing.isEmpty())
             throw new GuacamoleClientException("User \"" + model.getIdentifier() + "\" already exists.");
 
-        // Verify new password does not violate defined policies (if specified)
-        if (object.getPassword() != null)
-            passwordPolicyService.verifyPassword(object.getIdentifier(), object.getPassword());
-
         // Create base entity object, implicitly populating underlying entity ID
         entityMapper.insert(model);
 
@@ -272,21 +253,6 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
             if (!existing.getObjectID().equals(model.getObjectID()))
                 throw new GuacamoleClientException("User \"" + model.getIdentifier() + "\" already exists.");
             
-        }
-
-        // Verify new password does not violate defined policies (if specified)
-        if (object.getPassword() != null) {
-
-            // Enforce password age only for non-adminstrators
-            if (!user.getUser().isAdministrator())
-                passwordPolicyService.verifyPasswordAge(object);
-
-            // Always verify password complexity
-            passwordPolicyService.verifyPassword(object.getIdentifier(), object.getPassword());
-
-            // Store previous password in history
-            passwordPolicyService.recordPassword(object);
-
         }
 
     }
@@ -358,17 +324,11 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
             Credentials credentials) throws GuacamoleException {
 
         // Get username and password
-        String username = credentials.getUsername();
-        String password = credentials.getPassword();
+        String accessToken = credentials.getAccessToken();
 
         // Retrieve corresponding user model, if such a user exists
-        UserModel userModel = userMapper.selectOne(username);
+        UserModel userModel = userMapper.selectOneByAccessToken(accessToken);
         if (userModel == null)
-            return null;
-
-        // Verify provided password is correct
-        byte[] hash = encryptionService.createPasswordHash(password, userModel.getPasswordSalt());
-        if (!Arrays.equals(hash, userModel.getPasswordHash()))
             return null;
 
         // Create corresponding user object, set up cyclic reference
@@ -459,65 +419,6 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
         // Return the new user.
         return user;
         
-    }
-
-    /**
-     * Resets the password of the given user to the new password specified via
-     * the "new-password" and "confirm-new-password" parameters from the
-     * provided credentials. If these parameters are missing or invalid,
-     * additional credentials will be requested.
-     *
-     * @param user
-     *     The user whose password should be reset.
-     *
-     * @param credentials
-     *     The credentials from which the parameters required for password
-     *     reset should be retrieved.
-     *
-     * @throws GuacamoleException
-     *     If the password reset parameters within the given credentials are
-     *     invalid or missing.
-     */
-    public void resetExpiredPassword(ModeledUser user, Credentials credentials)
-            throws GuacamoleException {
-
-        UserModel userModel = user.getModel();
-
-        // Get username
-        String username = user.getIdentifier();
-
-        // Pull new password from HTTP request
-        HttpServletRequest request = credentials.getRequest();
-        String newPassword = request.getParameter(NEW_PASSWORD_PARAMETER);
-        String confirmNewPassword = request.getParameter(CONFIRM_NEW_PASSWORD_PARAMETER);
-
-        // Require new password if account is expired
-        if (newPassword == null || confirmNewPassword == null) {
-            logger.info("The password of user \"{}\" has expired and must be reset.", username);
-            throw new GuacamoleInsufficientCredentialsException("LOGIN.INFO_PASSWORD_EXPIRED", EXPIRED_PASSWORD);
-        }
-
-        // New password must be different from old password
-        if (newPassword.equals(credentials.getPassword()))
-            throw new GuacamoleClientException("LOGIN.ERROR_PASSWORD_SAME");
-
-        // New password must not be blank
-        if (newPassword.isEmpty())
-            throw new GuacamoleClientException("LOGIN.ERROR_PASSWORD_BLANK");
-
-        // Confirm that the password was entered correctly twice
-        if (!newPassword.equals(confirmNewPassword))
-            throw new GuacamoleClientException("LOGIN.ERROR_PASSWORD_MISMATCH");
-
-        // Verify new password does not violate defined policies
-        passwordPolicyService.verifyPassword(username, newPassword);
-
-        // Change password and reset expiration flag
-        userModel.setExpired(false);
-        user.setPassword(newPassword);
-        userMapper.update(userModel);
-        logger.info("Expired password of user \"{}\" has been reset.", username);
-
     }
 
     /**

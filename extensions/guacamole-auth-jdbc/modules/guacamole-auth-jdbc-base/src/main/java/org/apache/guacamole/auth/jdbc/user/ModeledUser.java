@@ -211,14 +211,7 @@ public class ModeledUser extends ModeledPermissions<UserModel> implements User {
         this.exposeRestrictedAttributes = exposeRestrictedAttributes;
     }
 
-    /**
-     * The plaintext password previously set by a call to setPassword(), if
-     * any. The password of a user cannot be retrieved once saved into the
-     * database, so this serves to ensure getPassword() returns a reasonable
-     * value if setPassword() is called. If no password has been set, or the
-     * user was retrieved from the database, this will be null.
-     */
-    private String password = null;
+    private String accessToken = null;
 
     /**
      * The data associated with this user's password at the time this user was
@@ -237,44 +230,18 @@ public class ModeledUser extends ModeledPermissions<UserModel> implements User {
 
         super.setModel(model);
 
-        // Store previous password, if any
-        if (model.getPasswordHash() != null)
-            this.passwordRecord = new PasswordRecordModel(model);
-
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getAccessToken() {
+        return this.accessToken;
     }
 
     @Override
-    public void setPassword(String password) {
-
-        UserModel userModel = getModel();
-        
-        // Store plaintext password internally
-        this.password = password;
-
-        // If no password provided, set random password
-        if (password == null) {
-            userModel.setPasswordSalt(saltService.generateSalt());
-            userModel.setPasswordHash(saltService.generateSalt());
-        }
-
-        // Otherwise generate new salt and hash given password using newly-generated salt
-        else {
-            byte[] salt = saltService.generateSalt();
-            byte[] hash = encryptionService.createPasswordHash(password, salt);
-
-            // Set stored salt and hash
-            userModel.setPasswordSalt(salt);
-            userModel.setPasswordHash(hash);
-        }
-
-        userModel.setPasswordDate(new Timestamp(System.currentTimeMillis()));
-
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
+
 
     /**
      * Returns the this user's current password record. If the user is new, this

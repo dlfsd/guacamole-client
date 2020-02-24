@@ -65,6 +65,12 @@ public class Field {
         public static String PASSWORD = "PASSWORD";
 
         /**
+         * A token field. This field type generally behaves identically to
+         * arbitrary text fields, but has semantic differences.
+         */
+        public static String ACCESS_TOKEN = "ACCESS_TOKEN";
+
+        /**
          * A numeric field, whose value must contain only digits.
          */
         public static String NUMERIC = "NUMERIC";

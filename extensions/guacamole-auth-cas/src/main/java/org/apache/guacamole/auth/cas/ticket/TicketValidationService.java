@@ -113,12 +113,14 @@ public class TicketValidationService {
             
             credentials.setUsername(username);
 
+            // TODO
             // Retrieve password, attempt decryption, and set credentials.
             Object credObj = ticketAttrs.remove("credential");
             if (credObj != null) {
                 String clearPass = decryptPassword(credObj.toString());
-                if (clearPass != null && !clearPass.isEmpty())
-                    credentials.setPassword(clearPass);
+                if (clearPass != null && !clearPass.isEmpty()){
+                    // credentials.setPassword(clearPass);
+                }
             }
             
             // Convert remaining attributes that have values to Strings

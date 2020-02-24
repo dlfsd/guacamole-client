@@ -60,22 +60,9 @@ public interface User extends Identifiable, Attributes, Permissions {
 
     }
 
-    /**
-     * Returns this user's password. Note that the password returned may be
-     * hashed or completely arbitrary.
-     *
-     * @return A String which may (or may not) be the user's password.
-     */
-    public String getPassword();
+    public String getAccessToken();
 
-    /**
-     * Sets this user's password. Note that while this function is guaranteed
-     * to change the password of this User object, there is no guarantee that
-     * getPassword() will return the value given to setPassword().
-     *
-     * @param password The password to set.
-     */
-    public void setPassword(String password);
+    public void setAccessToken(String accessToken);
 
     /**
      * Returns the date and time that this user was last active. If the user

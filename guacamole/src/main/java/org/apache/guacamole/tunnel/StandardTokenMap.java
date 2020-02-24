@@ -37,9 +37,9 @@ public class StandardTokenMap extends HashMap<String, String> {
     public static final String USERNAME_TOKEN = "GUAC_USERNAME";
 
     /**
-     * The name of the token containing the user's password.
+     * The name of the token containing the user's access token.
      */
-    public static final String PASSWORD_TOKEN = "GUAC_PASSWORD";
+    public static final String ACCESS_TOKEN = "GUAC_ACCESS_TOKEN";
 
     /**
      * The name of the token containing the hostname/address of the machine the
@@ -103,9 +103,9 @@ public class StandardTokenMap extends HashMap<String, String> {
             put(USERNAME_TOKEN, authenticatedUser.getIdentifier());
 
         // Add password token
-        String password = credentials.getPassword();
-        if (password != null)
-            put(PASSWORD_TOKEN, password);
+        String accessToken = credentials.getAccessToken();
+        if (accessToken != null)
+            put(ACCESS_TOKEN, accessToken);
 
         // Add client hostname token
         String hostname = credentials.getRemoteHostname();

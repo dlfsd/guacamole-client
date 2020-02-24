@@ -53,7 +53,6 @@
         <module>extensions/guacamole-auth-duo</module>
         <module>extensions/guacamole-auth-header</module>
         <module>extensions/guacamole-auth-jdbc</module>
-        <module>extensions/guacamole-auth-ldap</module>
         <module>extensions/guacamole-auth-openid</module>
         <module>extensions/guacamole-auth-quickconnect</module>
         <module>extensions/guacamole-auth-totp</module>

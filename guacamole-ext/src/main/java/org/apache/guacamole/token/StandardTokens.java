@@ -43,7 +43,7 @@ public class StandardTokens {
     /**
      * The name of the password token added via addStandardTokens().
      */
-    public static final String PASSWORD_TOKEN = "GUAC_PASSWORD";
+    public static final String ACCESS_TOKEN = "GUAC_ACCESS_TOKEN";
 
     /**
      * The name of the client hostname token added via addStandardTokens().
@@ -115,7 +115,7 @@ public class StandardTokens {
      *
      * @param credentials
      *     The Credentials to use when populating the GUAC_USERNAME and
-     *     GUAC_PASSWORD tokens.
+     *     GUAC_ACCESS_TOKEN tokens.
      */
     public static void addStandardTokens(TokenFilter filter, Credentials credentials) {
 
@@ -125,9 +125,9 @@ public class StandardTokens {
             filter.setToken(USERNAME_TOKEN, username);
 
         // Add password token
-        String password = credentials.getPassword();
-        if (password != null)
-            filter.setToken(PASSWORD_TOKEN, password);
+        String accessToken = credentials.getAccessToken();
+        if (accessToken != null)
+            filter.setToken(ACCESS_TOKEN, accessToken);
 
         // Add client hostname token
         String hostname = credentials.getRemoteHostname();

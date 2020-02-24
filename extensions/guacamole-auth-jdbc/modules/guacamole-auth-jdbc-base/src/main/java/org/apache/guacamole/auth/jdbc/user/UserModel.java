@@ -31,20 +31,9 @@ import org.apache.guacamole.auth.jdbc.base.EntityType;
 public class UserModel extends EntityModel {
 
     /**
-     * The SHA-256 hash of the password and salt.
+     * Access token
      */
-    private byte[] passwordHash;
-
-    /**
-     * The 32-byte random binary password salt that was appended to the
-     * password prior to hashing.
-     */
-    private byte[] passwordSalt;
-
-    /**
-     * The time this user's password was last reset.
-     */
-    private Timestamp passwordDate;
+    private String accessToken;
 
     /**
      * Whether the user account is disabled. Disabled accounts exist and can
@@ -139,77 +128,12 @@ public class UserModel extends EntityModel {
         super.setIdentifier(identifier);
     }
 
-    /**
-     * Returns the hash of this user's password and password salt. This may be
-     * null if the user was not retrieved from the database, and setPassword()
-     * has not yet been called.
-     *
-     * @return
-     *     The hash of this user's password and password salt.
-     */
-    public byte[] getPasswordHash() {
-        return passwordHash;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    /**
-     * Sets the hash of this user's password and password salt. This is
-     * normally only set upon retrieval from the database, or through a call
-     * to the higher-level setPassword() function.
-     *
-     * @param passwordHash
-     *     The hash of this user's password and password salt.
-     */
-    public void setPasswordHash(byte[] passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    /**
-     * Returns the random salt that was used when generating this user's
-     * password hash. This may be null if the user was not retrieved from the
-     * database, and setPassword() has not yet been called.
-     *
-     * @return
-     *     The random salt that was used when generating this user's password
-     *     hash.
-     */
-    public byte[] getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    /**
-     * Sets the random salt that was used when generating this user's password
-     * hash. This is normally only set upon retrieval from the database, or
-     * through a call to the higher-level setPassword() function.
-     *
-     * @param passwordSalt
-     *     The random salt used when generating this user's password hash.
-     */
-    public void setPasswordSalt(byte[] passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
-    /**
-     * Returns the date that this user's password was last set/reset. This
-     * value is required to be manually updated whenever the user's password is
-     * changed; it will not be automatically updated by the database.
-     *
-     * @return
-     *     The date that this user's password was last set/reset.
-     */
-    public Timestamp getPasswordDate() {
-        return passwordDate;
-    }
-
-    /**
-     * Sets the date that this user's password was last set/reset. This
-     * value is required to be manually updated whenever the user's password is
-     * changed; it will not be automatically updated by the database.
-     *
-     * @param passwordDate
-     *     The date that this user's password was last set/reset.
-     */
-    public void setPasswordDate(Timestamp passwordDate) {
-        this.passwordDate = passwordDate;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     /**

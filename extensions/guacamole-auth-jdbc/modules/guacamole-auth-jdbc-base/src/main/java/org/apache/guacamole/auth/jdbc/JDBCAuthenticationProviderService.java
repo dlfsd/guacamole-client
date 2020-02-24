@@ -29,10 +29,7 @@ import org.apache.guacamole.auth.jdbc.user.ModeledAuthenticatedUser;
 import org.apache.guacamole.auth.jdbc.user.ModeledUser;
 import org.apache.guacamole.auth.jdbc.user.ModeledUserContext;
 import org.apache.guacamole.auth.jdbc.user.UserService;
-import org.apache.guacamole.net.auth.AuthenticatedUser;
-import org.apache.guacamole.net.auth.AuthenticationProvider;
-import org.apache.guacamole.net.auth.Credentials;
-import org.apache.guacamole.net.auth.UserContext;
+import org.apache.guacamole.net.auth.*;
 import org.apache.guacamole.net.auth.credentials.CredentialsInfo;
 import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsException;
 
@@ -77,7 +74,8 @@ public class JDBCAuthenticationProviderService implements AuthenticationProvider
             return user;
 
         // Otherwise, unauthorized
-        throw new GuacamoleInvalidCredentialsException("Invalid login", CredentialsInfo.USERNAME_PASSWORD);
+        throw new GuacamoleInvalidCredentialsException("Invalid login",
+            CredentialsInfo.ACCESS_TOKEN_CREDENTIALS);
 
     }
 
@@ -112,13 +110,6 @@ public class JDBCAuthenticationProviderService implements AuthenticationProvider
 
             }
 
-            // Update password if password is expired AND the password was
-            // actually involved in the authentication process
-            if (databaseCredentialsUsed) {
-                if (user.isExpired() || passwordPolicyService.isPasswordExpired(user))
-                    userService.resetExpiredPassword(user, authenticatedUser.getCredentials());
-            }
-
         }
         
         // If no user account is found, and database-specific account
@@ -131,7 +122,7 @@ public class JDBCAuthenticationProviderService implements AuthenticationProvider
         // restrictions apply in this situation
         else
             throw new GuacamoleInvalidCredentialsException("Invalid login",
-                    CredentialsInfo.USERNAME_PASSWORD);
+                    CredentialsInfo.ACCESS_TOKEN_CREDENTIALS);
         
         // Initialize the UserContext with the user account and return it.
         context.init(user.getCurrentUser());
