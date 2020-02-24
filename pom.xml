@@ -49,10 +49,7 @@
         <module>guacamole-common-js</module>
 
         <!-- Authentication extensions -->
-        <module>extensions/guacamole-auth-header</module>
         <module>extensions/guacamole-auth-jdbc</module>
-        <module>extensions/guacamole-auth-openid</module>
-        <module>extensions/guacamole-auth-quickconnect</module>
 
         <!-- Example web applications using the Guacamole APIs -->
         <module>doc/guacamole-example</module>
