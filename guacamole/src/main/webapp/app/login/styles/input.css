@@ -30,6 +30,12 @@
     margin-bottom: 0.5em;
     padding: 0.5em 0.75em;
     max-width: none;
+
+    outline: none;
+}
+
+.login-ui .login-dialog .login-fields input:focus {
+    border-color: #8800ea;
 }
 
 .login-ui .login-dialog .buttons input[type="submit"] {

@@ -4,7 +4,7 @@
     
     "APP" : {
 
-        "NAME"    : "Apache Guacamole",
+        "NAME"    : "BUILDER STUDIO IDE",
         "VERSION" : "${project.version}",
 
         "ACTION_ACKNOWLEDGE"        : "OK",
@@ -38,6 +38,7 @@
         
         "FIELD_HEADER_PASSWORD"       : "Password:",
         "FIELD_HEADER_PASSWORD_AGAIN" : "Re-enter Password:",
+        "FIELD_HEADER_ACCESSTOKEN"    : "Token:",
 
         "FIELD_PLACEHOLDER_FILTER" : "Filter",
 
@@ -213,7 +214,8 @@
         "ERROR_INVALID_LOGIN" : "Invalid Login",
 
         "FIELD_HEADER_USERNAME" : "Username",
-        "FIELD_HEADER_PASSWORD" : "Password"
+        "FIELD_HEADER_PASSWORD" : "Password",
+        "FIELD_HEADER_ACCESSTOKEN": "Token"
 
     },
 

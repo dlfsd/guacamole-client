@@ -74,6 +74,19 @@ angular.module('index').config(['$routeProvider', '$locationProvider',
         var $q              = $injector.get('$q');
         var userPageService = $injector.get('userPageService');
 
+      // Required types
+        var ConnectionGroup         = $injector.get('ConnectionGroup');
+        var ClientIdentifier        = $injector.get('ClientIdentifier');
+        var Error                   = $injector.get('Error');
+        var Field                   = $injector.get('Field');
+
+        // Required services
+        var $route                  = $injector.get('$route');
+        var authenticationService   = $injector.get('authenticationService');
+        var connectionGroupService  = $injector.get('connectionGroupService');
+        var dataSourceService       = $injector.get('dataSourceService');
+        var requestService          = $injector.get('requestService');
+
         // Promise for routing attempt
         var route = $q.defer();
 
@@ -85,15 +98,35 @@ angular.module('index').config(['$routeProvider', '$locationProvider',
             userPageService.getHomePage()
             .then(function homePageRetrieved(homePage) {
 
-                // If home page is the requested location, allow through
-                if ($location.path() === homePage.url)
-                    route.resolve();
+              dataSourceService.apply(
+                connectionGroupService.getConnectionGroupTree,
+                authenticationService.getAvailableDataSources(),
+                ConnectionGroup.ROOT_IDENTIFIER
+              )
+                .then(function rootGroupsRetrieved(rootConnectionGroups) {
 
-                // Otherwise, reject and reroute
-                else {
-                    $location.path(homePage.url);
-                    route.reject();
-                }
+                  var dataSource = 'postgresql'
+                  if (rootConnectionGroups[dataSource] && rootConnectionGroups[dataSource].childConnections.length > 0) {
+                    var connection = rootConnectionGroups[dataSource].childConnections[0];
+                    var clientIdentifier = ClientIdentifier.toString({
+                      dataSource : dataSource,
+                      type       : ClientIdentifier.Types.CONNECTION,
+                      id         : connection.identifier
+                    });
+
+                    $location.url('/client/' + clientIdentifier);
+                  } else {
+                    authenticationService.logout()
+                      ['catch'](requestService.IGNORE)
+                      ['finally'](function logoutComplete() {
+                      if ($location.path() !== '/')
+                        $location.url('/');
+                      else
+                        $route.reload();
+                    });
+                  }
+
+                })
 
             })
 
@@ -126,60 +159,6 @@ angular.module('index').config(['$routeProvider', '$locationProvider',
             resolve       : { routeToUserHomePage: routeToUserHomePage }
         })
 
-        // Management screen
-        .when('/settings/:dataSource?/:tab', {
-            title         : 'APP.NAME',
-            bodyClassName : 'settings',
-            templateUrl   : 'app/settings/templates/settings.html',
-            controller    : 'settingsController',
-            resolve       : { updateCurrentToken: updateCurrentToken }
-        })
-
-        // Connection editor
-        .when('/manage/:dataSource/connections/:id?', {
-            title         : 'APP.NAME',
-            bodyClassName : 'manage',
-            templateUrl   : 'app/manage/templates/manageConnection.html',
-            controller    : 'manageConnectionController',
-            resolve       : { updateCurrentToken: updateCurrentToken }
-        })
-
-        // Sharing profile editor
-        .when('/manage/:dataSource/sharingProfiles/:id?', {
-            title         : 'APP.NAME',
-            bodyClassName : 'manage',
-            templateUrl   : 'app/manage/templates/manageSharingProfile.html',
-            controller    : 'manageSharingProfileController',
-            resolve       : { updateCurrentToken: updateCurrentToken }
-        })
-
-        // Connection group editor
-        .when('/manage/:dataSource/connectionGroups/:id?', {
-            title         : 'APP.NAME',
-            bodyClassName : 'manage',
-            templateUrl   : 'app/manage/templates/manageConnectionGroup.html',
-            controller    : 'manageConnectionGroupController',
-            resolve       : { updateCurrentToken: updateCurrentToken }
-        })
-
-        // User editor
-        .when('/manage/:dataSource/users/:id?', {
-            title         : 'APP.NAME',
-            bodyClassName : 'manage',
-            templateUrl   : 'app/manage/templates/manageUser.html',
-            controller    : 'manageUserController',
-            resolve       : { updateCurrentToken: updateCurrentToken }
-        })
-
-        // User group editor
-        .when('/manage/:dataSource/userGroups/:id?', {
-            title         : 'APP.NAME',
-            bodyClassName : 'manage',
-            templateUrl   : 'app/manage/templates/manageUserGroup.html',
-            controller    : 'manageUserGroupController',
-            resolve       : { updateCurrentToken: updateCurrentToken }
-        })
-
         // Client view
         .when('/client/:id/:params?', {
             bodyClassName : 'client',
@@ -192,5 +171,59 @@ angular.module('index').config(['$routeProvider', '$locationProvider',
         .otherwise({
             resolve : { routeToUserHomePage: routeToUserHomePage }
         });
+
+        // // Management screen
+        // .when('/settings/:dataSource?/:tab', {
+        //     title         : 'APP.NAME',
+        //     bodyClassName : 'settings',
+        //     templateUrl   : 'app/settings/templates/settings.html',
+        //     controller    : 'settingsController',
+        //     resolve       : { updateCurrentToken: updateCurrentToken }
+        // })
+        //
+        // // Connection editor
+        // .when('/manage/:dataSource/connections/:id?', {
+        //     title         : 'APP.NAME',
+        //     bodyClassName : 'manage',
+        //     templateUrl   : 'app/manage/templates/manageConnection.html',
+        //     controller    : 'manageConnectionController',
+        //     resolve       : { updateCurrentToken: updateCurrentToken }
+        // })
+        //
+        // // Sharing profile editor
+        // .when('/manage/:dataSource/sharingProfiles/:id?', {
+        //     title         : 'APP.NAME',
+        //     bodyClassName : 'manage',
+        //     templateUrl   : 'app/manage/templates/manageSharingProfile.html',
+        //     controller    : 'manageSharingProfileController',
+        //     resolve       : { updateCurrentToken: updateCurrentToken }
+        // })
+        //
+        // // Connection group editor
+        // .when('/manage/:dataSource/connectionGroups/:id?', {
+        //     title         : 'APP.NAME',
+        //     bodyClassName : 'manage',
+        //     templateUrl   : 'app/manage/templates/manageConnectionGroup.html',
+        //     controller    : 'manageConnectionGroupController',
+        //     resolve       : { updateCurrentToken: updateCurrentToken }
+        // })
+        //
+        // // User editor
+        // .when('/manage/:dataSource/users/:id?', {
+        //     title         : 'APP.NAME',
+        //     bodyClassName : 'manage',
+        //     templateUrl   : 'app/manage/templates/manageUser.html',
+        //     controller    : 'manageUserController',
+        //     resolve       : { updateCurrentToken: updateCurrentToken }
+        // })
+        //
+        // // User group editor
+        // .when('/manage/:dataSource/userGroups/:id?', {
+        //     title         : 'APP.NAME',
+        //     bodyClassName : 'manage',
+        //     templateUrl   : 'app/manage/templates/manageUserGroup.html',
+        //     controller    : 'manageUserGroupController',
+        //     resolve       : { updateCurrentToken: updateCurrentToken }
+        // })
 
 }]);

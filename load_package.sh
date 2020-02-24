@@ -23,14 +23,14 @@
 # helper
 #
 
-docker exec -d 60ad308bc549 rm /usr/local/tomcat/webapps/guacamole.war
-docker exec -d 60ad308bc549 rm /etc/guacamole/extensions/guacamole-auth-jdbc-postgresql-1.1.0.jar
+docker exec -d e2ff31a11cd7 rm /usr/local/tomcat/webapps/guacamole.war
+docker exec -d e2ff31a11cd7 rm /etc/guacamole/extensions/guacamole-auth-jdbc-postgresql-1.1.0.jar
 
-docker exec -d 60ad308bc549 rm /etc/guacamole/schema/001-create-schema.sql
-docker exec -d 60ad308bc549 rm /etc/guacamole/schema/002-create-admin-user.sql
+docker exec -d e2ff31a11cd7 rm /etc/guacamole/schema/001-create-schema.sql
+docker exec -d e2ff31a11cd7 rm /etc/guacamole/schema/002-create-admin-user.sql
 
-docker cp guacamole/target/guacamole-1.1.0.war 60ad308bc549:/usr/local/tomcat/webapps/guacamole.war
-docker cp extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-postgresql/target/guacamole-auth-jdbc-postgresql-1.1.0.jar 60ad308bc549:/etc/guacamole/extensions/guacamole-auth-jdbc-postgresql-1.1.0.jar
+docker cp guacamole/target/guacamole-1.1.0.war e2ff31a11cd7:/usr/local/tomcat/webapps/guacamole.war
+docker cp extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-postgresql/target/guacamole-auth-jdbc-postgresql-1.1.0.jar e2ff31a11cd7:/etc/guacamole/extensions/guacamole-auth-jdbc-postgresql-1.1.0.jar
 
-docker cp extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-postgresql/schema/001-create-schema.sql 60ad308bc549:/etc/guacamole/schema/001-create-schema.sql
-docker cp extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-postgresql/schema/002-create-admin-user.sql 60ad308bc549:/etc/guacamole/schema/002-create-admin-user.sql
+docker cp extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-postgresql/schema/001-create-schema.sql e2ff31a11cd7:/etc/guacamole/schema/001-create-schema.sql
+docker cp extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-postgresql/schema/002-create-admin-user.sql e2ff31a11cd7:/etc/guacamole/schema/002-create-admin-user.sql

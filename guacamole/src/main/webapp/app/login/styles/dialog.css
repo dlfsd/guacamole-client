@@ -36,8 +36,6 @@
     max-width: 3in;
     text-align: left;
     padding: 1em;
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
     font-size: 1.25em;
 
     display: inline-block;
@@ -72,6 +70,13 @@
     text-transform: uppercase;
     text-align: center;
     font-size: 1.25em;
+
+    color: #6c00ea;
+}
+
+.login-ui .login-dialog .builder-logo {
+    display: flex;
+    justify-content: center;
 }
 
 .login-ui .login-dialog .version .version-number {
