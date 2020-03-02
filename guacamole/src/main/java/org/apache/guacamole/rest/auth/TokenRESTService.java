@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleResourceNotFoundException;
+import org.apache.guacamole.api.dockeride.UserSessionService;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.UserContext;
@@ -61,6 +62,9 @@ public class TokenRESTService {
      */
     @Inject
     private AuthenticationService authenticationService;
+
+    @Inject
+    private UserSessionService userSessionService;
 
     /**
      * Returns the credentials associated with the given request, using the
@@ -183,6 +187,8 @@ public class TokenRESTService {
 
         // Return possibly-new auth token
         AuthenticatedUser authenticatedUser = session.getAuthenticatedUser();
+        userSessionService.startSession(accessToken);
+
         return new APIAuthenticationResult(
             token,
             authenticatedUser.getIdentifier(),

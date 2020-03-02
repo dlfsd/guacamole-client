@@ -51,3 +51,31 @@ FROM (
 JOIN guacamole_entity          ON permissions.username = guacamole_entity.name AND guacamole_entity.type = 'USER'
 JOIN guacamole_entity affected ON permissions.affected_username = affected.name AND guacamole_entity.type = 'USER'
 JOIN guacamole_user            ON guacamole_user.entity_id = affected.entity_id;
+
+
+
+-- INSERT INTO guacamole_connection (connection_name, protocol) VALUES ('RDP Connection', 'rdp');
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'security', 'any'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'hostname', 'host.docker.internal'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'password', 'ubuntu'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'username', 'ubuntu'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'port', '3389'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'ignore-cert', 'true'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
