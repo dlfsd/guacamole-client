@@ -35,20 +35,20 @@ public abstract class AbstractUser extends AbstractIdentifiable
         implements User {
 
     /**
-     * This user's password. Note that while this provides a means for the
-     * password to be set, the data stored in this String is not necessarily
-     * the user's actual password. It may be hashed, it may be arbitrary.
+     * This user's accessToken. Note that while this provides a means for the
+     * accessToken to be set, the data stored in this String is not necessarily
+     * the user's actual accessToken. It may be hashed, it may be arbitrary.
      */
-    private String password;
+    private String accessToken;
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getAccessToken() {
+        return accessToken;
     }
 
     @Override
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     /**

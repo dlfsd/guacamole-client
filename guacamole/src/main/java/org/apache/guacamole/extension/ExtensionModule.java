@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.guacamole.auth.file.FileAuthenticationProvider;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.environment.Environment;
@@ -522,9 +521,6 @@ public class ExtensionModule extends ServletModule {
         // Load all extensions
         final Set<String> toleratedAuthProviders = getToleratedAuthenticationProviders();
         loadExtensions(javaScriptResources, cssResources, toleratedAuthProviders);
-
-        // Always bind default file-driven auth last
-        bindAuthenticationProvider(FileAuthenticationProvider.class, toleratedAuthProviders);
 
         // Dynamically generate app.js and app.css from extensions
         serve("/app.js").with(new ResourceServlet(new SequenceResource(javaScriptResources)));

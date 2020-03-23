@@ -25,6 +25,7 @@ import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleResourceNotFoundException;
 import org.apache.guacamole.GuacamoleSecurityException;
+import org.apache.guacamole.api.dockeride.DockerIDEUserSessionError;
 import org.apache.guacamole.form.Field;
 import org.apache.guacamole.language.Translatable;
 import org.apache.guacamole.language.TranslatableMessage;
@@ -118,7 +119,12 @@ public class APIError {
          * stream. The Guacamole protocol status code of that error can be
          * retrieved with getStatusCode().
          */
-        STREAM_ERROR;
+        STREAM_ERROR,
+
+        /**
+         *
+         */
+        DOCKER_IDE_USER_SESSION_ERROR;
 
         /**
          * Returns the REST API error type which corresponds to the type of the
@@ -156,6 +162,9 @@ public class APIError {
             // Errors from intercepted streams
             if (exception instanceof GuacamoleStreamException)
                 return STREAM_ERROR;
+
+            if (exception instanceof DockerIDEUserSessionError)
+                return DOCKER_IDE_USER_SESSION_ERROR;
 
             // All other errors
             return INTERNAL_ERROR;

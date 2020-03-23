@@ -63,9 +63,10 @@ public class PasswordRecordModel {
      */
     public PasswordRecordModel(UserModel user) {
         this.userID = user.getObjectID();
-        this.passwordHash = user.getPasswordHash();
-        this.passwordSalt = user.getPasswordSalt();
-        this.passwordDate = user.getPasswordDate();
+        // TODO
+//        this.passwordHash = user.getPasswordHash();
+//        this.passwordSalt = user.getPasswordSalt();
+//        this.passwordDate = user.getPasswordDate();
     }
 
     /**

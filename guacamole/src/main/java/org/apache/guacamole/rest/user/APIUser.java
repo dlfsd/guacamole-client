@@ -36,11 +36,11 @@ public class APIUser {
      * The username of this user.
      */
     private String username;
-    
+
     /**
-     * The password of this user.
+     * The accessToken of this user.
      */
-    private String password;
+    private String accessToken;
     
     /**
      * Map of all associated attributes by attribute identifier.
@@ -66,7 +66,7 @@ public class APIUser {
 
         // Set user information
         this.username = user.getIdentifier();
-        this.password = user.getPassword();
+        this.accessToken = user.getAccessToken();
         this.lastActive = user.getLastActive();
 
         // Associate any attributes
@@ -94,16 +94,16 @@ public class APIUser {
      * Returns the password for this user.
      * @return The password for this user.
      */
-    public String getPassword() {
-        return password;
+    public String getAccessToken() {
+        return accessToken;
     }
 
     /**
      * Set the password for this user.
-     * @param password The password for this user.
+     * @param accessToken The accessToken for this user.
      */
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     /**

@@ -17,28 +17,21 @@
  * under the License.
  */
 
-package org.apache.guacamole.auth.jdbc.user;
-
-import org.apache.guacamole.auth.jdbc.base.ModeledDirectoryObjectMapper;
-import org.apache.ibatis.annotations.Param;
+package org.apache.guacamole.form;
 
 /**
- * Mapper for user objects.
+ * Represents a text field which will contain the uniquely-identifying token of a user
  */
-public interface UserMapper extends ModeledDirectoryObjectMapper<UserModel> {
+public class AccessTokenField extends Field {
 
-    /**
-     * Returns the user having the given username, if any. If no such user
-     * exists, null is returned.
-     *
-     * @param username
-     *     The username of the user to return.
-     *
-     * @return
-     *     The user having the given username, or null if no such user exists.
-     */
-    UserModel selectOne(@Param("username") String username);
-
-    UserModel selectOneByAccessToken(@Param("accessToken") String accessToken);
+  /**
+   * Creates a new TokenField with the given name.
+   *
+   * @param accessToken
+   *     The unique name to associate with this field.
+   */
+  public AccessTokenField(String accessToken) {
+    super(accessToken, Field.Type.ACCESS_TOKEN);
+  }
 
 }

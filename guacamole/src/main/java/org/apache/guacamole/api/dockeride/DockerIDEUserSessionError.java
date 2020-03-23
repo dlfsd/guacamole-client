@@ -17,37 +17,13 @@
  * under the License.
  */
 
-.login-ui .login-dialog .login-fields input {
-    display: block;
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    -moz-border-radius: 0.2em;
-    -webkit-border-radius: 0.2em;
-    -khtml-border-radius: 0.2em;
-    font-family: Carlito, FreeSans, Helvetica, Arial, sans-serif;
-    border-radius: 0.2em;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 0.5em;
-    padding: 0.5em 0.75em;
-    max-width: none;
 
-    outline: none;
-}
+package org.apache.guacamole.api.dockeride;
 
-.login-ui .login-dialog .login-fields input:focus {
-    border-color: #8800ea;
-}
+import org.apache.guacamole.GuacamoleException;
 
-.login-ui .login-dialog .buttons input[type="submit"] {
-    width: 100%;
-    margin: 0;
-}
-
-.login-ui.continuation .login-dialog .buttons input[type="submit"] {
-    width: auto;
-}
-
-.login-ui.initial .login-dialog input.continue-login,
-.login-ui.continuation .login-dialog input.login {
-    display: none;
+public class DockerIDEUserSessionError extends GuacamoleException {
+  public DockerIDEUserSessionError(String message) {
+    super(message);
+  }
 }

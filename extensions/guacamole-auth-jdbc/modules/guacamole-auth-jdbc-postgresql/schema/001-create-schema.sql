@@ -162,10 +162,7 @@ CREATE TABLE guacamole_entity (
 );
 
 --
--- Table of users. Each user has a unique username and a hashed password
--- with corresponding salt. Although the authentication system will always set
--- salted passwords, other systems may set unsalted passwords by simply not
--- providing the salt.
+-- Table of users. Each user has a unique access token
 --
 
 CREATE TABLE guacamole_user (
@@ -173,10 +170,7 @@ CREATE TABLE guacamole_user (
   user_id       serial       NOT NULL,
   entity_id     integer      NOT NULL,
 
-  -- Optionally-salted password
-  password_hash bytea        NOT NULL,
-  password_salt bytea,
-  password_date timestamptz  NOT NULL,
+  access_token  varchar(256) NOT NULL,
 
   -- Account disabled/expired status
   disabled      boolean      NOT NULL DEFAULT FALSE,
@@ -708,29 +702,3 @@ CREATE INDEX guacamole_user_history_end_date
 
 CREATE INDEX guacamole_user_history_user_id_start_date
     ON guacamole_user_history(user_id, start_date);
-
---
--- User password history
---
-
-CREATE TABLE guacamole_user_password_history (
-
-  password_history_id serial  NOT NULL,
-  user_id             integer NOT NULL,
-
-  -- Salted password
-  password_hash bytea        NOT NULL,
-  password_salt bytea,
-  password_date timestamptz  NOT NULL,
-
-  PRIMARY KEY (password_history_id),
-
-  CONSTRAINT guacamole_user_password_history_ibfk_1
-    FOREIGN KEY (user_id)
-    REFERENCES guacamole_user (user_id) ON DELETE CASCADE
-
-);
-
-CREATE INDEX guacamole_user_password_history_user_id
-    ON guacamole_user_password_history(user_id);
-

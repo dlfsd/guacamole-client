@@ -108,6 +108,17 @@ angular.module('form').provider('formService', function formServiceProvider() {
         },
 
         /**
+         * Access token field type. The same as text field, but may
+         * have different semantics.
+         *
+         * @see {@link Field.Type.ACCESS_TOKEN}
+         * @type FieldType
+         */
+        'ACCESS_TOKEN' : {
+            templateUrl : 'app/form/templates/textField.html'
+        },
+
+        /**
          * Enumerated field type. The user is presented a finite list of values
          * to choose from.
          *

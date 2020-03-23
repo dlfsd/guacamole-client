@@ -718,6 +718,22 @@ if [ -n "$LOGBACK_LEVEL" ]; then
     sed -i "s/level=\"info\"/level=\"$LOGBACK_LEVEL\"/" $GUACAMOLE_HOME/logback.xml
 fi
 
+# Verify that admin api url was passed
+if [ -z "$ADMIN_API_URL" ]; then
+    cat <<END
+FATAL: Missing ADMIN_API_URL
+-------------------------------------------------------------------------------
+Every Guacamole instance needs an ADMIN_API_URL to send requests for Sessions
+
+ADMIN_API_URL      REST API Endpoint to send POST request with an accessToken in a body to start users session.
+
+END
+    exit 1;
+fi
+
+# Set DockerIDE API Endpoint
+set_property "admin-api-url" "$ADMIN_API_URL"
+
 #
 # Finally start Guacamole (under Tomcat)
 #

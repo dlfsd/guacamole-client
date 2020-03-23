@@ -17,14 +17,12 @@
 -- under the License.
 --
 
--- Create default user "guacadmin" with password "guacadmin"
+-- Create default user "guacadmin" with access_token "ABCD0001"
 INSERT INTO guacamole_entity (name, type) VALUES ('guacadmin', 'USER');
-INSERT INTO guacamole_user (entity_id, password_hash, password_salt, password_date)
+INSERT INTO guacamole_user (entity_id, access_token)
 SELECT
     entity_id,
-    decode('CA458A7D494E3BE824F5E1E175A1556C0F8EEF2C2D7DF3633BEC4A29C4411960', 'hex'),  -- 'guacadmin'
-    decode('FE24ADC5E11E2B25288D1704ABE67A79E342ECC26064CE69C5B3177795A82264', 'hex'),
-    CURRENT_TIMESTAMP
+    'guacadmin'
 FROM guacamole_entity WHERE name = 'guacadmin' AND guacamole_entity.type = 'USER';
 
 -- Grant this user all system permissions
@@ -53,3 +51,31 @@ FROM (
 JOIN guacamole_entity          ON permissions.username = guacamole_entity.name AND guacamole_entity.type = 'USER'
 JOIN guacamole_entity affected ON permissions.affected_username = affected.name AND guacamole_entity.type = 'USER'
 JOIN guacamole_user            ON guacamole_user.entity_id = affected.entity_id;
+
+
+
+-- INSERT INTO guacamole_connection (connection_name, protocol) VALUES ('RDP Connection', 'rdp');
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'security', 'any'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'hostname', 'host.docker.internal'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'password', 'ubuntu'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'username', 'ubuntu'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'port', '3389'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';
+--
+-- INSERT INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+-- SELECT connection_id, 'ignore-cert', 'true'
+-- FROM guacamole_connection WHERE connection_name = 'RDP Connection';

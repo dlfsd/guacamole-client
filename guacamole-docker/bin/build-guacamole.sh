@@ -85,67 +85,8 @@ tar -xzf extensions/guacamole-auth-jdbc/modules/guacamole-auth-jdbc-dist/target/
     "*.sql"
 
 #
-# Download MySQL JDBC driver
-#
-
-echo "Downloading MySQL Connector/J ..."
-curl -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.tar.gz" | \
-tar -xz                        \
-    -C "$DESTINATION/mysql/"   \
-    --wildcards                \
-    --no-anchored              \
-    --no-wildcards-match-slash \
-    --strip-components=1       \
-    "mysql-connector-*.jar"
-
-#
 # Download PostgreSQL JDBC driver
 #
 
 echo "Downloading PostgreSQL JDBC driver ..."
 curl -L "https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc41.jar" > "$DESTINATION/postgresql/postgresql-9.4-1201.jdbc41.jar"
-
-#
-# Copy LDAP auth extension and schema modifications
-#
-
-mkdir -p "$DESTINATION/ldap"
-tar -xzf extensions/guacamole-auth-ldap/target/*.tar.gz \
-    -C "$DESTINATION/ldap"                              \
-    --wildcards                                         \
-    --no-anchored                                       \
-    --xform="s#.*/##"                                   \
-    "*.jar"                                             \
-    "*.ldif"
-
-#
-# Copy Radius auth extension if it was build
-#
-
-if [ -f extensions/guacamole-auth-radius/target/guacamole-auth-radius*.jar ]; then
-    mkdir -p "$DESTINATION/radius"
-    cp extensions/guacamole-auth-radius/target/guacamole-auth-radius*.jar "$DESTINATION/radius"
-fi
-
-# Copy OPENID auth extension and schema modifications
-#
-
-if [ -f extensions/guacamole-auth-openid/target/guacamole-auth-openid*.jar ]; then
-    mkdir -p "$DESTINATION/openid"
-    cp extensions/guacamole-auth-openid/target/guacamole-auth-openid*.jar "$DESTINATION/openid"
-fi
-
-#
-# Copy Duo auth extension if it was built
-#
-
-if [ -f extensions/guacamole-auth-duo/target/*.tar.gz ]; then
-    mkdir -p "$DESTINATION/duo"
-    tar -xzf extensions/guacamole-auth-duo/target/*.tar.gz \
-        -C "$DESTINATION/duo/"                             \
-        --wildcards                                        \
-        --no-anchored                                      \
-        --no-wildcards-match-slash                         \
-        --strip-components=1                               \
-        "*.jar"
-fi

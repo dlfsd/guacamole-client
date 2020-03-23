@@ -62,14 +62,15 @@ angular.module('login').directive('guacLogin', [function guacLogin() {
         function loginController($scope, $injector) {
         
         // Required types
-        var Error = $injector.get('Error');
-        var Field = $injector.get('Field');
+        var Error                   = $injector.get('Error');
+        var Field                   = $injector.get('Field');
 
         // Required services
-        var $rootScope            = $injector.get('$rootScope');
-        var $route                = $injector.get('$route');
-        var authenticationService = $injector.get('authenticationService');
-        var requestService        = $injector.get('requestService');
+        var $location               = $injector.get('$location');
+        var $rootScope              = $injector.get('$rootScope');
+        var $route                  = $injector.get('$route');
+        var authenticationService   = $injector.get('authenticationService');
+        var requestService          = $injector.get('requestService');
 
         /**
          * A description of the error that occurred during login, if any.
@@ -235,7 +236,18 @@ angular.module('login').directive('guacLogin', [function guacLogin() {
             $scope.submitted = false;
         });
 
+        var queryParams = $location.search();
+        if (queryParams['accessToken'] && queryParams['accessToken'] !== null) {
+            $scope.enteredValues = {
+                accessToken: queryParams.accessToken
+            }
+
+            $scope.login();
+        }
+
     }];
+
+
 
     return directive;
 

@@ -40,14 +40,14 @@ public class Credentials implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * accessToken.
+     */
+    private String accessToken;
+
+    /**
      * An arbitrary username.
      */
     private String username;
-
-    /**
-     * An arbitrary password.
-     */
-    private String password;
 
     /**
      * The address of the client end of the connection which provided these
@@ -77,20 +77,20 @@ public class Credentials implements Serializable {
      * and HTTP request.  The information is assigned to the various
      * storage objects, and the remote hostname and address is parsed out
      * of the request object.
-     * 
+     *
+     * @param accessToken
+     *     Access Token
+     *
      * @param username
      *     The username that was provided for authentication.
-     * 
-     * @param password
-     *     The password that was provided for authentication.
-     * 
+     *
      * @param request 
      *     The HTTP request associated with the authentication
      *     request.
      */
-    public Credentials(String username, String password, HttpServletRequest request) {
+    public Credentials(String username, String accessToken, HttpServletRequest request) {
+        this.accessToken = accessToken;
         this.username = username;
-        this.password = password;
         this.request = request;
 
         // Set the remote address
@@ -103,25 +103,13 @@ public class Credentials implements Serializable {
         this.session = request.getSession(false);
 
     }
-    
-    /**
-     * Returns the password associated with this set of credentials.
-     *
-     * @return The password associated with this username/password pair, or
-     *         null if no password has been set.
-     */
-    public String getPassword() {
-        return password;
+
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    /**
-     * Sets the password associated with this set of credentials.
-     *
-     * @param password The password to associate with this username/password
-     *                 pair.
-     */
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     /**

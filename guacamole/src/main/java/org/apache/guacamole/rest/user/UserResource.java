@@ -137,46 +137,6 @@ public class UserResource
     }
 
     /**
-     * Updates the password for an individual existing user.
-     *
-     * @param userPasswordUpdate
-     *     The object containing the old password for the user, as well as the
-     *     new password to set for that user.
-     *
-     * @param request
-     *     The HttpServletRequest associated with the password update attempt.
-     *
-     * @throws GuacamoleException
-     *     If an error occurs while updating the user's password.
-     */
-    @PUT
-    @Path("password")
-    public void updatePassword(APIUserPasswordUpdate userPasswordUpdate,
-            @Context HttpServletRequest request) throws GuacamoleException {
-
-        // Build credentials
-        Credentials credentials = new Credentials(user.getIdentifier(),
-                userPasswordUpdate.getOldPassword(), request);
-
-        // Verify that the old password was correct
-        try {
-            AuthenticationProvider authProvider = userContext.getAuthenticationProvider();
-            if (authProvider.authenticateUser(credentials) == null)
-                throw new GuacamoleSecurityException("Permission denied.");
-        }
-
-        // Pass through any credentials exceptions as simple permission denied
-        catch (GuacamoleCredentialsException e) {
-            throw new GuacamoleSecurityException("Permission denied.");
-        }
-
-        // Set password to the newly provided one
-        user.setPassword(userPasswordUpdate.getNewPassword());
-        directory.update(user);
-
-    }
-
-    /**
      * Returns a resource which abstracts operations available on the overall
      * permissions granted directly to the User represented by this
      * UserResource.

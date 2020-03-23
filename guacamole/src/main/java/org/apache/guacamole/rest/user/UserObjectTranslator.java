@@ -47,8 +47,8 @@ public class UserObjectTranslator
             APIUser object) throws GuacamoleException {
 
         // Do not update the user password if no password was provided
-        if (object.getPassword() != null)
-            existingObject.setPassword(object.getPassword());
+        if (object.getAccessToken() != null)
+            existingObject.setAccessToken(object.getAccessToken());
 
         // Update user attributes
         existingObject.setAttributes(object.getAttributes());

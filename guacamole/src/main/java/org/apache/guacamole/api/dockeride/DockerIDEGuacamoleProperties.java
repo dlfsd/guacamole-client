@@ -17,28 +17,27 @@
  * under the License.
  */
 
-package org.apache.guacamole.auth.jdbc.user;
+package org.apache.guacamole.api.dockeride;
 
-import org.apache.guacamole.auth.jdbc.base.ModeledDirectoryObjectMapper;
-import org.apache.ibatis.annotations.Param;
+import org.apache.guacamole.properties.StringGuacamoleProperty;
 
-/**
- * Mapper for user objects.
- */
-public interface UserMapper extends ModeledDirectoryObjectMapper<UserModel> {
+public class DockerIDEGuacamoleProperties {
 
-    /**
-     * Returns the user having the given username, if any. If no such user
-     * exists, null is returned.
-     *
-     * @param username
-     *     The username of the user to return.
-     *
-     * @return
-     *     The user having the given username, or null if no such user exists.
-     */
-    UserModel selectOne(@Param("username") String username);
+  /**
+   * This class should not be instantiated.
+   */
+  private DockerIDEGuacamoleProperties() {}
 
-    UserModel selectOneByAccessToken(@Param("accessToken") String accessToken);
+
+  /**
+   * The URL of the PostgreSQL server hosting the Guacamole authentication tables.
+   */
+  public static final StringGuacamoleProperty ADMIN_API_URL =
+      new StringGuacamoleProperty() {
+
+        @Override
+        public String getName() { return "admin-api-url"; }
+
+      };
 
 }

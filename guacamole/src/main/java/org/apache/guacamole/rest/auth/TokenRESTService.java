@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleResourceNotFoundException;
+import org.apache.guacamole.api.dockeride.UserSessionService;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.UserContext;
@@ -62,6 +63,9 @@ public class TokenRESTService {
     @Inject
     private AuthenticationService authenticationService;
 
+    @Inject
+    private UserSessionService userSessionService;
+
     /**
      * Returns the credentials associated with the given request, using the
      * provided username and password.
@@ -69,29 +73,28 @@ public class TokenRESTService {
      * @param request
      *     The request to use to derive the credentials.
      *
+     * @param accessToken
+     *     The accessToken to associate with credentials, ot null if the
+     *     accessToken should be derived from the request
+     *
      * @param username
      *     The username to associate with the credentials, or null if the
      *     username should be derived from the request.
-     *
-     * @param password
-     *     The password to associate with the credentials, or null if the
-     *     password should be derived from the request.
      *
      * @return
      *     A new Credentials object whose contents have been derived from the
      *     given request, along with the provided username and password.
      */
-    private Credentials getCredentials(HttpServletRequest request,
-            String username, String password) {
+    private Credentials getCredentials(HttpServletRequest request, String username, String accessToken) {
 
+        // TODO
         // If no username/password given, try Authorization header
-        if (username == null && password == null) {
+        if (accessToken == null) {
 
             String authorization = request.getHeader("Authorization");
             if (authorization != null && authorization.startsWith("Basic ")) {
 
                 try {
-
                     // Decode base64 authorization
                     String basicBase64 = authorization.substring(6);
                     String basicCredentials = new String(
@@ -101,7 +104,7 @@ public class TokenRESTService {
                     int colon = basicCredentials.indexOf(':');
                     if (colon != -1) {
                         username = basicCredentials.substring(0, colon);
-                        password = basicCredentials.substring(colon + 1);
+                        accessToken = basicCredentials.substring(colon + 1);
                     }
                     else
                         logger.debug("Invalid HTTP Basic \"Authorization\" header received.");
@@ -118,7 +121,7 @@ public class TokenRESTService {
         } // end Authorization header fallback
 
         // Build credentials
-        return new Credentials(username, password, request);
+        return new Credentials(username, accessToken, request);
 
     }
 
@@ -128,11 +131,8 @@ public class TokenRESTService {
      * token is provided, the authentication procedure will attempt to update
      * or reuse the provided token.
      *
-     * @param username
-     *     The username of the user who is to be authenticated.
-     *
-     * @param password
-     *     The password of the user who is to be authenticated.
+     * @param accessToken
+     *     A token given by 3d party services to a user who is to be authenticated.
      *
      * @param token
      *     An optional existing auth token for the user who is to be
@@ -157,18 +157,21 @@ public class TokenRESTService {
      *     If an error prevents successful authentication.
      */
     @POST
-    public APIAuthenticationResult createToken(@FormParam("username") String username,
-            @FormParam("password") String password,
+    public APIAuthenticationResult createToken(
+            @FormParam("username") String username,
+            @FormParam("accessToken") String accessToken,
             @FormParam("token") String token,
             @Context HttpServletRequest consumedRequest,
             MultivaluedMap<String, String> parameters)
             throws GuacamoleException {
 
+        Boolean isLoginProcess = accessToken != null && token == null;
+
         // Reconstitute the HTTP request with the map of parameters
         HttpServletRequest request = new APIRequest(consumedRequest, parameters);
 
         // Build credentials from request
-        Credentials credentials = getCredentials(request, username, password);
+        Credentials credentials = getCredentials(request, username, accessToken);
 
         // Create/update session producing possibly-new token
         token = authenticationService.authenticate(credentials, token);
@@ -186,6 +189,14 @@ public class TokenRESTService {
 
         // Return possibly-new auth token
         AuthenticatedUser authenticatedUser = session.getAuthenticatedUser();
+
+        // User logins at the application, start session
+        if (isLoginProcess) {
+            logger.info("Start user session for accessToken " + accessToken);
+
+            userSessionService.startSession(accessToken);
+        }
+
         return new APIAuthenticationResult(
             token,
             authenticatedUser.getIdentifier(),

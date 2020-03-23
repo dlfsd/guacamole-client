@@ -22,6 +22,8 @@ package org.apache.guacamole.net.auth.credentials;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.apache.guacamole.form.AccessTokenField;
 import org.apache.guacamole.form.Field;
 import org.apache.guacamole.form.PasswordField;
 import org.apache.guacamole.form.UsernameField;
@@ -77,12 +79,22 @@ public class CredentialsInfo {
     public static final Field PASSWORD = new PasswordField("password");
 
     /**
+     * A field describing the password HTTP parameter expected by Guacamole
+     * during login, if passwords are being used.
+     */
+    public static final Field ACCESS_TOKEN = new AccessTokenField("accessToken");
+
+    /**
      * CredentialsInfo object which describes standard username/password
      * credentials.
      */
     public static final CredentialsInfo USERNAME_PASSWORD = new CredentialsInfo(Arrays.asList(
         USERNAME,
         PASSWORD
+    ));
+
+    public static final CredentialsInfo ACCESS_TOKEN_CREDENTIALS = new CredentialsInfo(Arrays.asList(
+        ACCESS_TOKEN
     ));
     
 }

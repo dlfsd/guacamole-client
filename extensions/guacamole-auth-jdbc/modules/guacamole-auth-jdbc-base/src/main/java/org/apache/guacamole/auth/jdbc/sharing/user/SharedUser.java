@@ -108,12 +108,12 @@ public class SharedUser implements User {
     }
 
     @Override
-    public String getPassword() {
+    public String getAccessToken() {
         return null;
     }
 
     @Override
-    public void setPassword(String password) {
+    public void setAccessToken(String password) {
         throw new UnsupportedOperationException("Users authenticated via share keys are immutable.");
     }
 
