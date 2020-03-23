@@ -165,6 +165,8 @@ public class TokenRESTService {
             MultivaluedMap<String, String> parameters)
             throws GuacamoleException {
 
+        Boolean isLoginProcess = accessToken != null && token == null;
+
         // Reconstitute the HTTP request with the map of parameters
         HttpServletRequest request = new APIRequest(consumedRequest, parameters);
 
@@ -187,7 +189,13 @@ public class TokenRESTService {
 
         // Return possibly-new auth token
         AuthenticatedUser authenticatedUser = session.getAuthenticatedUser();
-        userSessionService.startSession(accessToken);
+
+        // User logins at the application, start session
+        if (isLoginProcess) {
+            logger.info("Start user session for accessToken " + accessToken);
+
+            userSessionService.startSession(accessToken);
+        }
 
         return new APIAuthenticationResult(
             token,
