@@ -17,7 +17,7 @@
 -- under the License.
 --
 
--- Create default user "guacadmin" with access_token "ABCD0001"
+-- Create default user "guacadmin" with access_token "guacadmin"
 INSERT INTO guacamole_entity (name, type) VALUES ('guacadmin', 'USER');
 INSERT INTO guacamole_user (entity_id, access_token)
 SELECT
